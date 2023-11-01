@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang = "ru">
+    <head>
+        <meta charset = "UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href = "static/css/bootstrap.css" rel = "stylesheet">
+        <link href = "static/css/base.css" rel = "stylesheet">
+        <title>Ответы на вопрос</title>
+    </head>
+    <body class = "d-flex flex-column h-100"></body>
+        <header>
+            <div class = "container">
+                <div class = "row">
+                    <div class = "col-3">
+                        <a class = "navbar-brand headers" href = "index.html">
+                            <img src = "images/logo.png">
+                        </a>
+                    </div>
+
+                    <div class = "col-5 text-center align-self-center">
+                        <div class = "input-group">
+                            <input type = "text" class = "form-control" placeholder = "Поиск по тегам">
+                            <button class = "btn btn-outline-secondary" style = "background-color: #ffffff" type = "button"><img src = "images/search.png"></button>
+                        </div>
+                    </div>
+
+                    <div class = "col-2 align-self-center">
+                        <button class = "btn btn-primary" style = "background-color: rgb(245, 71, 65); border-color: #ff433d;" onclick = "document.location='ask.html'">
+                                Задать вопрос
+                        </button>
+                    </div>
+
+                    <div class = "col-1 align-self-center text-end">
+                        <img src = "images/avatar.jpg" width = "50px" height = "50px" style = "border-radius: 8px;" onclick = "document.location='user.html'">                                
+                    </div>
+                    <div class = "col-1 align-self-center text-start">
+                        <div class = "row btn text-start" onclick = "document.location='user.html'" style = "padding: 0">
+                                Username
+                        </div>        
+                        <div class = "row btn" style = "color: #b80600; padding-bottom: 0; padding-top : 0" >
+                            Выход
+                        </div>                          
+                    </div>
+                </div>
+            </div>               
+        </header>
+
+        <main>
+            <div class = "container">
+            <div class = "row justify-content-end" style = "padding-top: 2%">
+                <div class = "col">
+                    <div class = "row question_header" style = "font-size: 24px;">     
+                        Что такое Null Pointer Exception и как его исправить?                                  
+                    </div>
+                    <div class = "row" style = "padding-bottom: 2%">
+                        <div class = "row">
+                            <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
+                                <img src = "images/avatar.jpg" width = 100px heigth = 100px>
+                                <div class = "row" style = "justify-content: center">
+                                    Username
+                                </div>
+                                <div class = "row" style = "padding-top: 5%">
+                                    <div class = "col text-end">
+                                        <button class = "btn btn-danger">-</button>
+                                    </div>
+                                    <div class = "col text-center" style = "font-size: 26px; color: green">1</div>
+                                    <div class = "col text-start align-self-center">
+                                        <button class = "btn btn-success">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class = "col-9" style = "margin-bottom: 10px; padding-left: 2%">
+                                <div class = "row">
+                                    Что из себя представляет исключение Null Pointer Exception (java.lang.NullPointerException) 
+                                    и почему оно может происходить? <br> Какие методы и средства использовать, чтобы определить причину 
+                                    возникновения этого исключения, приводящего к преждевременному прекращению работы приложения?
+                                </div>
+                                <div class = "row" style = "font-style: italic; padding-top: 5%">
+                                    Вопрос задан 30 сентября 2023 г. в 13:47
+                                </div>
+                            </div>
+                            <div class = "row" style = "padding: 1%; padding-left: 0%">
+                                <div class = "col" style = "padding-left: 2%">
+                                    Теги:
+                                    <a href style = "padding-left: 1%;">
+                                        Java
+                                    </a>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class = "row question_header" style = "font-size: 24px;">     
+                        1 ответ                                
+                    </div>
+                    <div class = "row" style = "padding-bottom: 2%; padding-right: 2%">
+                        <div class = "border rounded border-success">
+                            <div class = "row">
+                                <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
+                                    <img src = "images/question.png" width = 100px heigth = 100px>
+                                    <div class = "row" style = "justify-content: center">
+                                        Java User
+                                    </div>
+                                    <div class = "row" style = "padding-top: 5%">
+                                        <div class = "col text-end">
+                                            <button class = "btn btn-danger">-</button>
+                                        </div>
+                                        <div class = "col text-center" style = "font-size: 26px; color: green">1</div>
+                                        <div class = "col text-start align-self-center">
+                                            <button class = "btn btn-success">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class = "col-9" style = "margin-bottom: 10px; padding-left: 2%; padding-top: 2%">
+                                    <div class = "row">
+                                        Когда вы объявляете переменную ссылочного типа, на самом деле вы создаете ссылку на объект данного типа. 
+                                        Рассмотрим следующий код для объявления переменной типа int: <br>
+
+                                        int x;<br>
+                                        x = 10;<br>
+                                        В этом примере переменная x имеет тип int и Java инициализирует её как 0. Когда вы присвоите 
+                                        переменной значение 10 (вторая строка), это значение сохранится в ячейке памяти, на которую ссылается x.<br>
+
+                                        Но когда вы объявляете ссылочный тип, процесс выглядит иначе. Посмотрим на следующий код:<br>
+
+                                        Integer num;<br>
+                                        num = new Integer(10);<br>
+                                        В первой строке объявлена переменная num, ее тип не относится к встроенному, следовательно, 
+                                        значением является ссылка (тип этой переменной, Integer, является ссылочным типом). Поскольку 
+                                        вы еще не указали, на что собираетесь ссылаться, Java присвоит переменной значение Null, 
+                                        подразумевая «Я ни на что не ссылаюсь».<br>
+
+                                        Во второй строке, ключевое слово new используется для создания объекта типа Integer. 
+                                        Этот объект имеет адрес в памяти, который присваивается переменной num. Теперь, с помощью 
+                                        переменной num вы можете обратиться к объекту используя оператора разыменования. <br>
+
+                                        Исключение, о котором вы говорите в вопросе, возникает, если вы объявили переменную, 
+                                        но не создали объект, то есть если вы попытаетесь разыменовать num до того, как создали 
+                                        объект, вы получите NullPointerException. В самом простом случае, компилятор обнаружит проблему и сообщит, что <br>
+
+                                        num may not have been initialized<br>
+
+                                        Что говорит: «возможно, переменная num не инициализирована».<br>
+
+                                        Иногда исключение вызвано именно тем, что объект действительно не был создан. К примеру, у вас может быть следующая функция:<br>
+
+                                        public void doSomething(Integer num){<br>
+                                        // Работаем с num<br>
+                                        }<br>
+                                        В этом случае создание объекта (переменная num) лежит на вызывающем коде,
+                                        то есть вы предполагаете, что он был создан ранее – до вызова метода doSomething. 
+                                        К сожалению, следующий вызов метода вполне возможен:<br>
+
+                                        doSomething(null);<br>
+                                        В этом случае значение переменной num будет null. Лучшим способом избежать данного исключения 
+                                        будет проверка на равенство нулю. Как результат, функция doSomething должна быть переписана следующим образом:<br>
+
+                                        public void doSomething(Integer num){<br>
+                                            if (num != null) {<br>
+                                            // Работаем с num<br>
+                                            }<br>
+                                        }<br>
+                                        Как альтернативный вариант предыдущему примеру вы можете сообщить вызывающему коду, 
+                                        что метод был вызван с неверными параметрами, например, с помощью IllegalArgumentException.<br>
+
+                                        public void doSomething(Integer num){<br>
+                                            if (num == null)<br>
+                                                throw new IllegalArgumentException("Num не должен быть null"); <br>
+                                            // Работаем с num<br>
+                                        }
+                                    </div>
+                                    <div class = "row" style = "font-style: italic; padding-top: 2%">
+                                        Ответ дан 30 сентября 2023 г. в 19:32
+                                    </div>
+                                    <div class = "row" style = "padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
+                                        <div class = "col-4" style = "padding-left: 0">
+                                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                                            <label class="btn btn-outline-success" for="btncheck1">Ответ был полезен</label>
+                                        </div>
+                                        <div class = "col-3 text-start">
+                                            <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
+                                            <label class="btn btn-outline-danger" for="btncheck2">Ответ не помог</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="row" style = "padding-right: 2%">
+                        <label for="Textarea" class="form-label" style = "padding-bottom: 1%; margin: 0; padding-left: 0">Добавьте свой ответ:</label>
+                        <textarea class="form-control" id="Textarea" placeholder="Введите текст ответа" style = "margin-bottom: 1%" maxlength="2000"></textarea>
+                        <div class="d-grid gap-2 justify-content-md-end d-md-flex" style = "padding-right: 0">
+                            <button class="btn btn-success" type="button">Отправить ответ</button>
+                        </div>
+                    </form>
+                    <div class = "row" style = "padding-bottom: 2%; padding-top: 2%">
+                        <span class="text-center">
+                            <button class = "btn btn-outline-primary">1</button>
+                            <button class = "btn btn-outline-primary">2</button>
+                            <button class = "btn btn-outline-primary">3</button>
+                            <button class = "btn btn-outline-primary">></button>
+                        </span>
+                    </div>
+                </div>
+                <div class = "col-3" style = "margin-left: 2%">
+                    <p class = "bold_header text-center">Популярные теги</p>
+                    <div class = "container">
+                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
+                            <div class = "col-6" style = "color: blue">VK Education</div>
+                            <div class = "col-3" style = "color: rgb(56, 197, 150)">Chrome</div>
+                            <div class = "col-3" style = "color: rgb(46, 14, 105)">Golang</div>
+                        </div>
+                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
+                            <div class = "col-4" style = "color: rgb(226, 44, 44)">Java</div>
+                            <div class = "col-8" style = "color: rgb(41, 11, 11)">Машинное обучение</div>
+                        </div>
+                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
+                            <div class = "col" style = "color: rgb(145, 17, 219)">Алгоритмы</div>
+                            <div class = "col" style = "color: rgb(24, 202, 33)">C#</div>
+                            <div class = "col" style = "color: rgb(105, 58, 14)">ChatGPT</div>
+                        </div>
+                    </div>
+
+                    <div class = "bold_header text-center" style = "padding-top: 15%; padding-bottom: 3%">Лучшие участники</div>
+                    <ul style = "font-size: 18px">
+                        <li style = "padding-top: 1%">Джон фон Нейман</li>
+                        <li style = "padding-top: 1%">Эдсгер Вибе Дейкстра</li>
+                        <li style = "padding-top: 1%">Ада Лавлейс</li>
+                        <li style = "padding-top: 1%">Гордон Мур</li>
+                        <li style = "padding-top: 1%">Павел Дуров</li>
+                        <li style = "padding-top: 1%">Стив Джобс</li>
+                        <li style = "padding-top: 1%">Дженсен Хуанг</li>
+                        <li style = "padding-top: 1%">Лиза Су</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+        </main>
+
+        <footer class = "text-center">
+            CodeResolve, 2023
+        </footer>
+        <script src = "static/js/bootstrap.js"></script>
+    </body>
+</html>
