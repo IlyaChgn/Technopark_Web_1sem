@@ -16,31 +16,11 @@ header
     font-weight: bold;
     font-size: 20px;
     margin-bottom: 0%;
-    padding-bottom: 2%;
     color:rgb(5, 23, 83)
 }
 
-footer
-{
+.footer {
     height: 25px;
     background-color: #97ce68;
 }
 
-body
-{
-    position: relative;
-    margin: 0;
-    min-height: 100%;
-}
-
-html
-{
-    height: 100%;
-}
-
-.test
-{
-    max-width: 500px;
-    width: 100%;
-    margin: 0, auto;
-}

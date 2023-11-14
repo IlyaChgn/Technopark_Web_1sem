@@ -1,0 +1,54 @@
+{% if items.has_previous %}
+<!-- Добавляем кнопку "назад", если текущая страница - не первая -->
+    <button class = "btn btn-outline-primary" name = "page" value = "{{ items.previous_page_number }}">
+        <
+    </button>
+{% endif %}
+
+{% if items.number|add:-2 > 1 %}
+    <!-- Добавляем кнопку "1", если номер текущей страницы больше, чем три -->
+    <button class = "btn btn-outline-primary" name = "page" value="1">
+        {{ 1 }}
+    </button>
+{% endif %}
+
+{% if items.number|add:-3 > 1 %}
+    <!-- Добавляем многоточие, если номер текущей страницы больше, чем четыре -->
+    <button class = "btn btn-outline-primary" disabled>
+        ...
+    </button>
+{% endif %}
+
+{% for num in items.paginator.page_range %}
+{% if items.number == num %}
+    <!-- Добавляем другой стиль кнопки для текущей страницы -->
+    <button class = "btn btn-primary" disabled>
+        {{ num }}
+    </button>
+{% elif num >= items.number|add:-2 and num <= items.number|add:2 %}
+    <button class = "btn btn-outline-primary" name = "page" value="{{ num }}">
+        {{ num }}
+    </button>
+{% endif %}
+{% endfor %}
+
+{% if items.number|add:3 < items.paginator.num_pages %}
+    <!-- Добавляем многоточие, если номер текущей страницы меньше, чем max - 3 -->
+    <button class = "btn btn-outline-primary" disabled>
+        ...
+    </button>
+{% endif %}
+
+{% if items.number|add:2 < items.paginator.num_pages %}
+    <!-- Добавляем номер последней страницы, если номер текущей меньше, чем max - 2 -->
+    <button class = "btn btn-outline-primary" name = "page" value="{{ items.paginator.num_pages }}">
+        {{ items.paginator.num_pages }}
+    </button>
+{% endif %}
+
+{% if items.has_next %}
+<!-- Добавляем кнопку "вперед", если текущая страница - не последняя -->
+    <button class = "btn btn-outline-primary" name = "page" value = "{{items.next_page_number}}">
+        >
+    </button>
+{% endif %}

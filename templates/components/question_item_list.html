@@ -1,0 +1,51 @@
+{% load static %}
+
+<div class = "row" style = "padding-top: 2%; padding-bottom: 2%">
+    <div class = "border rounded border-success">
+        <div class = "row">
+            <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
+                <img src = "{% static '/images/avatar.jpg' %}" width = 100px heigth = 100px>
+                <div class = "row" style = "justify-content: center">
+                    {{ question.user_name }}
+                </div>
+                <div class = "row" style = "padding-top: 5%">
+                    <div class = "col text-end">
+                        <button class = "btn btn-danger">-</button>
+                    </div>
+                    <div class = "col text-center" style = "font-size: 26px; color: green">1</div>
+                    <div class = "col text-start align-self-center">
+                        <button class = "btn btn-success">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class = "col-9" style = "margin-bottom: 10px; padding-left: 2%">
+                <div class = "row question_header">
+                    <a href = "{% url 'question' question.id %}" style = "padding: 0; padding-top: 1%">
+                        {{ question.title }}
+                    </a>
+                </div>
+                <div class = "row">
+                    {{ question.text }}
+                </div>
+                <div class = "row" style = "font-style: italic; padding-top: 2%">
+                    {{ question.date }}
+                </div>
+                <div class = "row" style = "padding: 1%; padding-left: 0%">
+                    <div class = "col" style = "padding-left: 0">
+                        Теги:
+                        {% for tag in question.tags %}
+                        <a href style = "padding-left: 1%;">
+                            {{ tag }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <div class = "col text-end">
+                        <a href = "{% url 'question' question.id %}">
+                            Ответы: {{ question.answers_num }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
