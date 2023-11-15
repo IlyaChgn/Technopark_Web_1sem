@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class = "bold_header" style = "padding-left: 0">Новые вопросы</div>
+
 
 <div class = "col">
+    <div class = "row">
+        <div class = "col-6 text-start bold_header">
+            <a href = "{% url 'index' %}" style="color: black">Новые вопросы</a>
+        </div>
+        <div class = "col-6 text-end bold_header" >
+            <a href = "" style="color: black">Лучшие вопросы</a>
+        </div>
+    </div>
     {% for question in items %}
 
     <!-- Список вопросов -->
@@ -13,9 +21,19 @@
     <!-- Пагинация -->
     <div class = "row" style = "padding-bottom: 2%;">
         <span class="text-center">
-            <form action = "{% url 'index' %}">
-                {% include 'components/pagination.html' %}
-            </form>
+            {% if type == 'new' %}
+                <form action = "{% url 'index' %}">
+                    {% include 'components/pagination.html' %}
+                </form>
+            {% elif type == 'search' %}
+                <form action = "{% url 'search' tag %}">
+                    {% include 'components/pagination.html' %}
+                </form>
+            {% elif type == 'hot' %}
+                <form action = "{% url 'hot' %}">
+                    {% include 'components/pagination.html' %}
+                </form>
+            {% endif %}
         </span>
     </div>
 </div>
