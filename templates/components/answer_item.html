@@ -6,13 +6,13 @@
             <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
                 <img src = "{% static '/images/question.png' %}" width = 100px heigth = 100px>
                 <div class = "row" style = "justify-content: center">
-                    {{ answer.user_name }}
+                    {{ answer.profile.user.username }}
                 </div>
                 <div class = "row" style = "padding-top: 5%">
                     <div class = "col text-end">
                         <button class = "btn btn-danger">-</button>
                     </div>
-                    <div class = "col text-center" style = "font-size: 26px; color: green">1</div>
+                    <div class = "col text-center" style = "font-size: 26px; color: green">{{ answer.rating_count }}</div>
                     <div class = "col text-start align-self-center">
                         <button class = "btn btn-success">+</button>
                     </div>
@@ -23,18 +23,31 @@
                     {{ answer.text }}
                 </div>
                 <div class = "row" style = "font-style: italic; padding-top: 2%">
-                    {{ answer.date }}
+                    Ответ дан {{ answer.date }}
                 </div>
+                {% if answer.is_correct %}
                 <div class = "row" style = "padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class = "col-4" style = "padding-left: 0">
-                        <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                        <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" checked>
                         <label class="btn btn-outline-success" for="btncheck1">Ответ был полезен</label>
                     </div>
                     <div class = "col-3 text-start">
-                        <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
+                        <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" disabled>
                         <label class="btn btn-outline-danger" for="btncheck2">Ответ не помог</label>
                     </div>
                 </div>
+                {% else %}
+                <div class = "row" style = "padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
+                    <div class = "col-4" style = "padding-left: 0">
+                        <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" disabled>
+                        <label class="btn btn-outline-success" for="btncheck1">Ответ был полезен</label>
+                    </div>
+                    <div class = "col-3 text-start">
+                        <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" checked>
+                        <label class="btn btn-outline-danger" for="btncheck2">Ответ не помог</label>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
