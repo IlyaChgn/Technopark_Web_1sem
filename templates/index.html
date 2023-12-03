@@ -9,7 +9,7 @@
             <a href = "{% url 'index' %}" style="color: black">Новые вопросы</a>
         </div>
         <div class = "col-6 text-end bold_header" >
-            <a href = "" style="color: black">Лучшие вопросы</a>
+            <a href = "{% url 'hot' %}" style="color: black">Лучшие вопросы</a>
         </div>
     </div>
     {% for question in items %}

@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.db.models import Count
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -10,7 +10,7 @@ class Profile(models.Model):
 
 class Rating(models.Model):
     mark = models.IntegerField()
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ManyToManyField(Profile)
 
 
 class Tag(models.Model):
@@ -22,7 +22,7 @@ class QuestionManager(models.Manager):
         return self.order_by('date').reverse()
 
     def hot_questions_list(self):
-        return self.alias(c_rating=Сount('rating')).filter(c_rating__gt=90).order_by('-c_rating')
+        return self.order_by('rating__mark').reverse()
 
     def find_by_tag(self, tag_name):
         return self.prefetch_related('tags').filter(tags__tag=tag_name)
@@ -30,7 +30,7 @@ class QuestionManager(models.Manager):
 
 class Question(models.Model):
     def rating_count(self):
-        return self.rating.count()
+        return self.rating.mark
 
     def get_tags(self):
         tag_list = self.tags.all()
@@ -46,7 +46,7 @@ class Question(models.Model):
     text = models.TextField()
     tags = models.ManyToManyField(Tag)
     date = models.DateTimeField()
-    rating = models.ManyToManyField(Rating)
+    rating = models.OneToOneField(Rating, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     objects = QuestionManager()
@@ -62,12 +62,12 @@ class AnswerManager(models.Manager):
 
 class Answer(models.Model):
     def rating_count(self):
-        return self.rating.count()
+        return self.rating.mark
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.TextField()
     date = models.DateTimeField()
-    rating = models.ManyToManyField(Rating)
+    rating = models.OneToOneField(Rating, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     is_correct = models.BooleanField()
 
