@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class = "col-3"></div>
+<div class = "col">
+    <div class = "mb-3 bold_header" style = "padding-bottom: 1%;">
+        Регистрация на CodeResolve
+    </div>
+    <form>
+        <div class="row mb-3">
+            <label for="inputLogin" class="col-sm-3 col-form-label">Логин</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputLogin" style = "width: 350px;" maxlength="30">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputEmail" class="col-sm-3 col-form-label">Эл. почта</label>
+            <div class="col-sm-9">
+                <input type="email" class="form-control is-invalid" id="inputEmail" style = "width: 350px;" aria-describedby="BusyEmail" maxlength="40">
+                <div class="invalid-feedback" id = "BusyEmail">
+                    Пользователь с такой электронной почтой уже зарегистрирован.
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputNick" class="col-sm-3 col-form-label">Никнейм</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputNick" style = "width: 350px;" maxlength="15">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputPassword" class="col-sm-3 col-form-label">Пароль</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="inputPassword" style = "width: 350px;">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputPasswordAgain" class="col-sm-3 col-form-label">Повторите пароль</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="inputPasswordAgain" style = "width: 350px;">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="formFile" class="col-form-label col-sm-3">Загрузите аватар</label>
+            <div class = "col-sm-9">
+                <input class="form-control" type="file" id="formFile" style = "width: 350px">
+            </div>
+          </div>
+        <div class = "row mb-3" style = "padding-top: 1%; padding-left: 28%">
+            <button type="submit" class="btn btn-primary" style = "width: 200px">Зарегистрироваться</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

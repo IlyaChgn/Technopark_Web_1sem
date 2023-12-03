@@ -1,0 +1,26 @@
+header
+{
+    height: 55px;
+    background-color: #97ce68;
+}
+
+.bold_header 
+{
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 0%;
+}
+
+.question_header
+{
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 0%;
+    color:rgb(5, 23, 83)
+}
+
+.footer {
+    height: 25px;
+    background-color: #97ce68;
+}
+

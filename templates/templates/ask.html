@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class = "col">
+    <div class = "row bold_header">Новый вопрос</div>
+    <form style = "padding-top: 2%">
+        <div class="row" style = "padding-bottom: 2%">
+            <div class = "col-2 align-self-center" style = "padding-left: 0">
+                <label for="inputTheme">Заголовок вопроса</label>
+            </div>
+            <div class="col align-self-center">
+                <input type="text" class="form-control border-secondary" id="inputTheme" maxlength = "70">
+            </div>
+        </div>
+        <div class="row" style = "padding-bottom: 2%">
+            <div class = "col-2" style = "padding-left: 0">
+                <label for="inputText">Текст</label>
+            </div>
+            <div class="col align-self-center">
+                <textarea class="form-control border-secondary" id="inputText" style="height: 200px" maxlength="1000"></textarea>
+            </div>
+        </div>
+        <div class="row" style = "padding-bottom: 2%">
+            <div class = "col-2 align-self-center" style = "padding-left: 0">
+                <label for="inputTags">Теги</label>
+            </div>
+            <div class="col align-self-center">
+                <input type="text" class="form-control border-secondary" id="inputTags" maxlength = "50">
+            </div>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-success" type="button">Отправить вопрос</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

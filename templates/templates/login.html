@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class = "col-4"></div>
+<div class = "col">
+    <div class = "mb-3 bold_header">
+        Вход в аккаунт
+    </div>
+    <form>
+        <div class="mb-3" style = "padding-top: 1%">
+            <label for="InputLogin" class="form-label">Введите логин:</label>
+            <div class = "col">
+                <input class="form-control" id="InputLogin" style = "width: 300px;" maxlength="30">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="InputPassword" class="form-label">Введите пароль:</label>
+            <input type="password" class="form-control is-invalid" id="InputPassword" style = "width: 300px;" aria-describedby = "WrongPassword">
+            <div class="invalid-feedback" id = "WrongPassword">
+                Пожалуйста, проверьте правильность введенного пароля.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    <div class = "row" style = "padding-top: 5%">
+        <a href = "{% url 'register' %}">
+            Еще нет аккаунта? Зарегистрируйтесь!
+        </a>
+    </div>
+</div>
+{% endblock %}
