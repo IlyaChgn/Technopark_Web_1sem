@@ -113,7 +113,7 @@ class QuestionForm(forms.ModelForm):
     tags = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'InputTags',
                                                          'placeholder': 'Ключевые слова, относящиеся к теме вопроса'}),
                            max_length=50,
-                           label='Теги', required=True)
+                           label='Теги', required=True, help_text='Максимальное количество тегов: 3')
 
     class Meta:
         model = Question

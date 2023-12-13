@@ -10,6 +10,9 @@
             <div class = "col-2" style = "padding-left: 0"> {{ field.label }} </div>
             <div class="col align-self-center">
                 {{ field }}
+                <div style="color: slategray; padding-top: 1%">
+                    {{ field.help_text }}
+                </div>
                 <div style = "padding-top: 1%; color: red">
                     {{ error }}
                 </div>
