@@ -1,38 +1,44 @@
 {% load static %}
 
-<div class = "question_header text-left" style = "font-size: 24px">
+<div class="question_header text-left" style="font-size: 24px">
     {{ question.title }}
 </div>
-<div class = "row" style = "padding-bottom: 2%">
-    <div class = "row">
-        <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
-            <img src = "{% static '/images/avatar.jpg' %}" width = 100px heigth = 100px>
-            <div class = "row" style = "justify-content: center">
-                {{ question.profile.user.username }}
+<div class="row" style="padding-bottom: 2%">
+    <div class="row">
+        <div class="col-2 text-center" style="margin: 10px; padding: 0px">
+            <img src="{% static '/images/avatar.jpg' %}" width=100px height="100px">
+            <div class="row" style="justify-content: center">
+                {{ question.profile.login }}
             </div>
-            <div class = "row" style = "padding-top: 5%">
-                <div class = "col text-end">
-                    <button class = "btn btn-danger">-</button>
+            <div class="row" style="padding-top: 5%">
+                <div class="col text-end" style="width: 36px">
+                    <button class="btn btn-danger"
+                            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">-
+                    </button>
                 </div>
-                <div class = "col text-center" style = "font-size: 26px; color: green">{{ question.rating_count }}</div>
-                <div class = "col text-start align-self-center">
-                    <button class = "btn btn-success">+</button>
+                <div class="col text-center" style="font-size: 26px; color: green; padding-left: 0; padding-right: 0">
+                    {{ question.rating_count }}
+                </div>
+                <div class="col text-start align-self-center" style="width: 36px">
+                    <button class="btn btn-success"
+                            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">+
+                    </button>
                 </div>
             </div>
         </div>
-        <div class = "col-9" style = "margin-bottom: 10px; padding-left: 2%">
-            <div class = "row">
+        <div class="col-9" style="margin-bottom: 10px; padding-left: 2%">
+            <div class="row">
                 {{ question.text }}
             </div>
-            <div class = "row" style = "font-style: italic; padding-top: 5%">
+            <div class="row" style="font-style: italic; padding-top: 5%">
                 Вопрос добавлен {{ question.date }}
             </div>
         </div>
-        <div class = "row" style = "padding: 1%; padding-left: 0%">
-            <div class = "col" style = "padding-left: 2%">
+        <div class="row" style="padding: 1%; padding-left: 0%">
+            <div class="col" style="padding-left: 2%">
                 Теги:
                 {% for tag in question.get_tags %}
-                <a href="{% url 'search' tag %}" style = "padding-left: 1%;">
+                <a href="{% url 'search' tag %}" style="padding-left: 1%;">
                     {{ tag }}
                 </a>
                 {% endfor %}

@@ -2,10 +2,17 @@ from django.db import models
 from django.conf import settings
 
 
+class ProfileManager(models.Manager):
+    def find_profile(self, user_id):
+        return self.filter(user=user_id).first()
+
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ImageField(null=True)
     login = models.CharField(max_length=30)
+
+    objects = ProfileManager()
 
 
 class Rating(models.Model):
@@ -69,6 +76,6 @@ class Answer(models.Model):
     date = models.DateTimeField()
     rating = models.OneToOneField(Rating, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    is_correct = models.BooleanField()
+    is_correct = models.BooleanField(null=True)
 
     objects = AnswerManager()

@@ -24,7 +24,9 @@ urlpatterns = [
     path('search/<str:tag_name>', views.search, name='search'),
     path('hot', views.show_hot, name='hot'),
     path('ask', views.ask, name='ask'),
-    path('login', views.login, name='login'),
-    path('register', views.register, name='register'),
+    path('login', views.log_in, name='login'),
+    path('signup', views.signup, name='signup'),
+    path('logout/', views.logout, name='logout'),
+    path('settings/', views.settings, name='settings'),
     path('admin/', admin.site.urls),
 ]

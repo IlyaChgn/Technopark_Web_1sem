@@ -1,8 +1,16 @@
-from django.shortcuts import render
+from django.contrib import auth
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
-from .models import Question, Answer
-from datetime import datetime
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_protect
+from django.db import IntegrityError
+
+from .decorators import anonymous_required
+from .forms import LoginForm, RegisterForm, QuestionForm, SettingsForm, AnswerForm
+from .models import Question, Answer, Profile
 
 
 def paginate(objects, page_num, per_page=10):
@@ -28,21 +36,102 @@ def show_hot(request):
     return render(request, 'index.html', {'items': paginate(questions, page_num), 'type': 'hot'})
 
 
+@csrf_protect
 def question(request, question_id):
+    if request.method == "GET":
+        answer_form = AnswerForm()
+    elif request.method == "POST":
+        answer_form = AnswerForm(request.POST)
+        if answer_form.is_valid():
+            answer = answer_form.save(request, question_id)
+            return redirect(reverse('question', kwargs={'question_id': question_id}) + f'#{answer.pk}')
+
     item = get_object_or_404(Question.objects.all(), pk=question_id)
     page_num = request.GET.get('page')
     answers = Answer.objects.answers_list(question_id)
     return render(request, 'question.html', {'question': item,
-                                             'items': paginate(answers, page_num)})
+                                             'items': paginate(answers, page_num, 15), 'form': answer_form})
 
 
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def settings(request):
+    if request.method == "GET":
+        settings_form = SettingsForm(initial={'username': request.user.username, 'email': request.user.email,
+                                              'nickname': Profile.objects.find_profile(request.user.pk).login})
+    elif request.method == "POST":
+        settings_form = SettingsForm(request.POST)
+        print(request.POST)
+        if settings_form.is_valid():
+            settings_form.save(request)
+            return redirect(reverse('settings'))
+    return render(request, 'settings.html', {'form': settings_form})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
 def ask(request):
-    return render(request, 'ask.html')
+    if request.method == "GET":
+        question_form = QuestionForm()
+    elif request.method == "POST":
+        question_form = QuestionForm(request.POST)
+        if question_form.is_valid():
+            new_question = question_form.save(request)
+            return redirect(reverse('question', args=[new_question.pk]))
+    return render(request, 'ask.html', context={'form': question_form})
 
 
-def login(request):
-    return render(request, 'login.html')
+@csrf_protect
+def log_in(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))
+
+    if request.method == "GET":
+        login_form = LoginForm()
+    elif request.method == "POST":
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            username = login_form.clean_login()
+            password = login_form.clean_password()
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if request.GET.get('continue') is not None:
+                    if request.GET.get('continue') == '/login' or request.GET.get('continue') == '/signup':
+                        return redirect(reverse('index'))
+                    return redirect(request.GET.get('continue'))
+                else:
+                    return redirect(reverse('index'))
+            else:
+                login_form.add_error(None, "Неверное имя пользователя или пароль.")
+    return render(request, 'login.html', context={'form': login_form})
 
 
-def register(request):
-    return render(request, 'register.html')
+@csrf_protect
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))
+
+    if request.method == "GET":
+        signup_form = RegisterForm()
+    elif request.method == "POST":
+        signup_form = RegisterForm(request.POST)
+        if signup_form.is_valid():
+            try:
+                user = signup_form.save()
+                login(request, user)
+                return redirect(reverse('index'))
+            except IntegrityError:
+                signup_form.add_error(None, 'Пользователь с таким именем уже существует.')
+    return render(request, 'signup.html', context={'form': signup_form})
+
+
+@login_required(login_url='login')
+def logout(request):
+    auth.logout(request)
+    if request.GET.get('continue') is not None:
+        if request.GET.get('continue') == '/login' or request.GET.get('continue') == '/signup':
+            return redirect(reverse('index'))
+        return redirect(request.GET.get('continue'))
+    else:
+        return redirect(reverse('index'))

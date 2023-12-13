@@ -2,108 +2,113 @@
 
 <!DOCTYPE html>
 
-<html lang = "ru" class = "h-100">
-    <head>
-        <meta charset = "UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href = "{% static '/css/bootstrap.css' %}" rel = "stylesheet">
-        <link href = "{% static '/css/base.css' %}" rel = "stylesheet">
-        <title>CodeResolve</title>
-    </head>
+<html lang="ru" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static '/css/base.css' %}" rel="stylesheet">
+    <title>CodeResolve</title>
+</head>
 
-    <body class = "d-flex flex-column h-100">
-        <header>
-            <div class = "container">
-                <div class = "row">
-                    <div class = "col-3">
-                        <a class = "navbar-brand headers" href = "{% url 'index' %}">
-                            <img src = "{% static '/images/logo.png' %}">
-                        </a>
-                    </div>
+<body class="d-flex flex-column h-100">
+<header>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <a class="navbar-brand headers" href="{% url 'index' %}">
+                    <img src="{% static '/images/logo.png' %}">
+                </a>
+            </div>
 
-                    <div class = "col-5 text-center align-self-center">
-                        <div class = "input-group">
-                            <input type = "text" class = "form-control" placeholder = "Поиск по тегам">
-                            <button class = "btn btn-outline-secondary" style = "background-color: #ffffff" type = "button"><img src = "{% static '/images/search.png' %}"></button>
-                        </div>
-                    </div>
-
-                    <form class = "col-2 align-self-center" action = "{% url 'ask' %}">
-                        <button class = "btn btn-primary" style = "background-color: rgb(245, 71, 65); border-color: #ff433d;">
-                                Задать вопрос
-                        </button>
-                    </form>
-                    {% if is_authorized %}
-                    <form class = "col-1 align-self-center text-end" action = "{% url 'login' %}">
-                        <button class = "btn btn-primary">Вход</button>
-                    </form>
-                    <form class = "col-1 align-self-center text-end" action = "{% url 'register' %}">
-                        <button class = "btn btn-light">
-                            Регистрация
-                        </button>                                   
-                    </form>
-                    {% else %}
-                    <div class = "col-1 align-self-center text-end">
-                        <img src = "{% static '/images/avatar.jpg' %}" width = "50px" height = "50px" style = "border-radius: 8px;" onclick = "document.location='user.html'">
-                    </div>
-                    <div class = "col-1 align-self-center text-start">
-                        <div class = "row btn text-start" onclick = "document.location='user.html'" style = "padding: 0">
-                                Username
-                        </div>        
-                        <div class = "row btn" style = "color: #b80600; padding-bottom: 0; padding-top : 0" >
-                            Выход
-                        </div>                          
-                    </div>
-                    {% endif %}
+            <div class="col-5 text-center align-self-center">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Поиск по тегам">
+                    <button class="btn btn-outline-secondary" style="background-color: #ffffff" type="button">
+                        <img src="{% static '/images/search.png' %}">
+                    </button>
                 </div>
             </div>
-        </header>
 
-        <main>
-            <div class = "container">
-            <div class = "row justify-content-end" style = "padding-top: 2%">
-                {% block content %}
-                {% endblock %}
-                <div class = "col-3">
-                    <p class = "bold_header text-center">Популярные теги</p>
-                    <div class = "container">
-                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
-                            <div class = "col-6" style = "color: blue">VK Education</div>
-                            <div class = "col-3" style = "color: rgb(56, 197, 150)">Chrome</div>
-                            <div class = "col-3" style = "color: rgb(46, 14, 105)">Golang</div>
-                        </div>
-                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
-                            <div class = "col-4" style = "color: rgb(226, 44, 44)">Java</div>
-                            <div class = "col-8" style = "color: rgb(41, 11, 11)">Машинное обучение</div>
-                        </div>
-                        <div class = "row text-start" style = "font-size: 18px; padding-top: 4%">
-                            <div class = "col" style = "color: rgb(145, 17, 219)">Алгоритмы</div>
-                            <div class = "col" style = "color: rgb(24, 202, 33)">C#</div>
-                            <div class = "col" style = "color: rgb(105, 58, 14)">ChatGPT</div>
-                        </div>
+            <form class="col-2 align-self-center" action="{% url 'ask' %}">
+                <button class="btn btn-primary" style="background-color: rgb(245, 71, 65); border-color: #ff433d;">
+                    Задать вопрос
+                </button>
+            </form>
+
+            {% if request.user.is_authenticated %}
+            <a class="col-1 align-self-center text-end" href="{% url 'settings' %}">
+                <img src="{% static '/images/avatar.jpg' %}" width="50px" height="50px" style="border-radius: 8px;">
+            </a>
+            <div class="col-1 align-self-center text-start">
+                <a class="row text-start" style="padding: 0; color: black; text-decoration: none"
+                   href="{% url 'settings' %}">
+                    {{ user.username }}
+                </a>
+                <a class="row" style="color: #b80600; padding-bottom: 0; padding-top : 0" href="{% url 'logout' %}?continue={{ request.path }}">
+                    Выход
+                </a>
+            </div>
+            {% else %}
+            <a class="col-1 align-self-center text-end" href="{% url 'login' %}?continue={{ request.path }}">
+                <button class="btn btn-primary">Вход</button>
+            </a>
+            <a class="col-1 align-self-center text-end"
+               href="{% url 'signup' %}">
+                <button class="btn btn-light">
+                    Регистрация
+                </button>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="row justify-content-end" style="padding-top: 2%">
+            {% block content %}
+            {% endblock %}
+            <div class="col-3">
+                <p class="bold_header text-center">Популярные теги</p>
+                <div class="container">
+                    <div class="row text-start" style="font-size: 18px; padding-top: 4%">
+                        <div class="col-6" style="color: blue">VK Education</div>
+                        <div class="col-3" style="color: rgb(56, 197, 150)">Chrome</div>
+                        <div class="col-3" style="color: rgb(46, 14, 105)">Golang</div>
                     </div>
-
-                    <div class = "bold_header text-center" style = "padding-top: 15%; padding-bottom: 3%">Лучшие участники</div>
-                    <ul style = "font-size: 18px">
-                        <li style = "padding-top: 1%">Джон фон Нейман</li>
-                        <li style = "padding-top: 1%">Эдсгер Вибе Дейкстра</li>
-                        <li style = "padding-top: 1%">Ада Лавлейс</li>
-                        <li style = "padding-top: 1%">Гордон Мур</li>
-                        <li style = "padding-top: 1%">Павел Дуров</li>
-                        <li style = "padding-top: 1%">Стив Джобс</li>
-                        <li style = "padding-top: 1%">Дженсен Хуанг</li>
-                        <li style = "padding-top: 1%">Лиза Су</li>
-                    </ul>
+                    <div class="row text-start" style="font-size: 18px; padding-top: 4%">
+                        <div class="col-4" style="color: rgb(226, 44, 44)">Java</div>
+                        <div class="col-8" style="color: rgb(41, 11, 11)">Машинное обучение</div>
+                    </div>
+                    <div class="row text-start" style="font-size: 18px; padding-top: 4%">
+                        <div class="col" style="color: rgb(145, 17, 219)">Алгоритмы</div>
+                        <div class="col" style="color: rgb(24, 202, 33)">C#</div>
+                        <div class="col" style="color: rgb(105, 58, 14)">ChatGPT</div>
+                    </div>
                 </div>
-            </div>
-            </div>
-        </main>
 
-        <footer class = "footer mt-auto">
-            <div class = "container text-center">
-                CodeResolve, 2023
+                <div class="bold_header text-center" style="padding-top: 15%; padding-bottom: 3%">Лучшие участники</div>
+                <ul style="font-size: 18px">
+                    <li style="padding-top: 1%">Джон фон Нейман</li>
+                    <li style="padding-top: 1%">Эдсгер Вибе Дейкстра</li>
+                    <li style="padding-top: 1%">Ада Лавлейс</li>
+                    <li style="padding-top: 1%">Гордон Мур</li>
+                    <li style="padding-top: 1%">Павел Дуров</li>
+                    <li style="padding-top: 1%">Стив Джобс</li>
+                    <li style="padding-top: 1%">Дженсен Хуанг</li>
+                    <li style="padding-top: 1%">Лиза Су</li>
+                </ul>
             </div>
-        </footer>
-        <script src = "{% static '/js/bootstrap.js' %}"></script>
-    </body>
+        </div>
+    </div>
+</main>
+
+<footer class="footer mt-auto">
+    <div class="container text-center">
+        CodeResolve, 2023
+    </div>
+</footer>
+<script src="{% static '/js/bootstrap.js' %}"></script>
+</body>
 </html>

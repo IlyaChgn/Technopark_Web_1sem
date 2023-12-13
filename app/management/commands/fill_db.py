@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
         ratings = [
             Rating(
-                mark=fake.random_int(min=0, max=10)
+                mark=fake.random_int(min=0, max=100)
             ) for _ in range(num * 110)
         ]
         Rating.objects.bulk_create(ratings)
@@ -82,7 +82,7 @@ class Command(BaseCommand):
         Question.objects.bulk_create(questions)
         questions = Question.objects.all()
         for q in questions:
-            q.tags.set([_tags[fake.random_int(min=0, max=num - 1)] for _ in range(fake.random_int(min=1, max=5))])
+            q.tags.set([_tags[fake.random_int(min=0, max=num - 1)] for _ in range(fake.random_int(min=1, max=3))])
         self.stdout.write("Finished with questions")
 
         answers = [
@@ -91,7 +91,7 @@ class Command(BaseCommand):
                 text=fake.text(max_nb_chars=500),
                 date=str(fake.date_time_this_decade()),
                 profile=profiles[fake.random_int(min=0, max=num - 1)],
-                is_correct=True if (fake.random_int() % 8 == 0) else False,
+                is_correct=True if (fake.random_int() % 10 == 0) else (False if (fake.random_int() % 5 != 0) else None),
                 rating=ratings[10 * num + i]
             ) for i in range(num * 100)
         ]
