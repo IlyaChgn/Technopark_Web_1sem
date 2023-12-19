@@ -1,6 +1,9 @@
-from django.contrib import auth
+import json
+
+from django.contrib import auth, messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
@@ -8,9 +11,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.db import IntegrityError
 
-from .decorators import anonymous_required
 from .forms import LoginForm, RegisterForm, QuestionForm, SettingsForm, AnswerForm
-from .models import Question, Answer, Profile
+from .models import Question, Answer, QuestionRating, AnswerRating
 
 
 def paginate(objects, page_num, per_page=10):
@@ -49,7 +51,7 @@ def question(request, question_id):
     item = get_object_or_404(Question.objects.all(), pk=question_id)
     page_num = request.GET.get('page')
     answers = Answer.objects.answers_list(question_id)
-    return render(request, 'question.html', {'question': item,
+    return render(request, 'question.html', {'item': item,
                                              'items': paginate(answers, page_num, 15), 'form': answer_form})
 
 
@@ -57,14 +59,14 @@ def question(request, question_id):
 @login_required(login_url='login', redirect_field_name='continue')
 def settings(request):
     if request.method == "GET":
-        settings_form = SettingsForm(initial={'username': request.user.username, 'email': request.user.email,
-                                              'nickname': Profile.objects.find_profile(request.user.pk).login})
+        settings_form = SettingsForm(instance=request.user,
+                                     initial={'nickname': request.user.profile.login})
     elif request.method == "POST":
-        settings_form = SettingsForm(request.POST)
-        print(request.POST)
+        settings_form = SettingsForm(request.POST, request.FILES, instance=request.user,
+                                     initial={'nickname': request.user.profile.login})
         if settings_form.is_valid():
             settings_form.save(request)
-            return redirect(reverse('settings'))
+            messages.success(request, 'Новые данные профиля успешно сохранены!')
     return render(request, 'settings.html', {'form': settings_form})
 
 
@@ -115,18 +117,23 @@ def signup(request):
     if request.method == "GET":
         signup_form = RegisterForm()
     elif request.method == "POST":
-        signup_form = RegisterForm(request.POST)
+        signup_form = RegisterForm(request.POST, request.FILES)
         if signup_form.is_valid():
             try:
                 user = signup_form.save()
                 login(request, user)
-                return redirect(reverse('index'))
+                if request.GET.get('continue') is not None:
+                    if request.GET.get('continue') == '/login' or request.GET.get('continue') == '/signup':
+                        return redirect(reverse('index'))
+                    return redirect(request.GET.get('continue'))
+                else:
+                    return redirect(reverse('index'))
             except IntegrityError:
                 signup_form.add_error(None, 'Пользователь с таким именем уже существует.')
     return render(request, 'signup.html', context={'form': signup_form})
 
 
-@login_required(login_url='login')
+@login_required(login_url='login', redirect_field_name='continue')
 def logout(request):
     auth.logout(request)
     if request.GET.get('continue') is not None:
@@ -135,3 +142,70 @@ def logout(request):
         return redirect(request.GET.get('continue'))
     else:
         return redirect(reverse('index'))
+
+
+@csrf_protect
+@login_required(login_url='login')
+def rate(request):
+    item_id = request.POST.get('item_id')
+    rate_type = request.POST.get('rate_type')
+    item_type = request.POST.get('item_type')
+    action = 'add'
+    search_obj = None
+    rating = 0
+
+    if item_type == 'answer':
+        item_obj = get_object_or_404(Answer, pk=item_id)
+        search_obj = AnswerRating.objects.search(item_obj, request.user.profile)
+    elif item_type == 'question':
+        item_obj = get_object_or_404(Question, pk=item_id)
+        search_obj = QuestionRating.objects.search(item_obj, request.user.profile)
+
+    if rate_type == 'like':
+        rating = 1
+    elif rate_type == 'dislike':
+        rating = -1
+
+    if search_obj is not None:
+        if search_obj.mark == rating:
+            search_obj.mark = 0
+            action = 'remove'
+        else:
+            search_obj.mark = rating
+        search_obj.save()
+    else:
+        if item_type == 'answer':
+            AnswerRating.objects.create(mark=rating, post=item_obj, profile=request.user.profile)
+        else:
+            QuestionRating.objects.create(mark=rating, post=item_obj, profile=request.user.profile)
+
+    return JsonResponse({'count': item_obj.rating_count(), 'action': action})
+
+
+@csrf_protect
+@login_required(login_url='login')
+def correct(request):
+    correctness = request.POST.get('correctness')
+    answer_id = request.POST.get('item_id')
+
+    answer = get_object_or_404(Answer, pk=answer_id)
+    is_correct = 'true'
+
+    if correctness == 'true':
+        if answer.is_correct:
+            answer.is_correct = None
+            is_correct = 'none'
+        else:
+            answer.is_correct = True
+            is_correct = 'true'
+
+    elif correctness == 'false':
+        if answer.is_correct == False:
+            answer.is_correct = None
+            is_correct = 'none'
+        else:
+            answer.is_correct = False
+            is_correct = 'false'
+
+    answer.save()
+    return JsonResponse({'is_correct': is_correct})

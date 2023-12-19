@@ -1,53 +1,43 @@
 {% load static %}
+{% load extras %}
 
 <div class = "row" style = "padding-top: 2%; padding-bottom: 2%">
     <div class = "border rounded border-success">
         <div class = "row">
             <div class = "col-2 text-center" style = "margin: 10px; padding: 0px">
-                <img src = "{% static '/images/avatar.jpg' %}" width = 100px height="100px">
+                <img src = "{{ item.profile.avatar.url }}" width = 100px height="100px">
                 <div class = "row" style = "justify-content: center">
-                    {{ question.profile.login }}
+                    {{ item.profile.login }}
                 </div>
-                <div class="row" style="padding-top: 5%">
-                <div class="col text-end" style="width: 36px">
-                    <button class="btn btn-danger"
-                            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">-
-                    </button>
+                {% csrf_token %}
+                <div class="row like-questions-list" data-id="{{ item.pk }}" style="padding-top: 5%">
+                    {% include 'components/like_item.html' %}
                 </div>
-                <div class="col text-center" style="font-size: 26px; color: green; padding-left: 0; padding-right: 0">
-                    {{ question.rating_count }}
-                </div>
-                <div class="col text-start align-self-center" style="width: 36px">
-                    <button class="btn btn-success"
-                            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">+
-                    </button>
-                </div>
-            </div>
             </div>
             <div class = "col-9" style = "margin-bottom: 10px; padding-left: 2%">
                 <div class = "row question_header">
-                    <a href = "{% url 'question' question.id %}" style = "padding: 0; padding-top: 1%">
-                        {{ question.title }}
+                    <a href = "{% url 'question' item.id %}" style = "padding: 0; padding-top: 1%">
+                        {{ item.title }}
                     </a>
                 </div>
                 <div class = "row">
-                    {{ question.text }}
+                    {{ item.text }}
                 </div>
                 <div class = "row" style = "font-style: italic; padding-top: 2%">
-                    Вопрос добавлен {{ question.date }}
+                    Вопрос добавлен {{ item.date }}
                 </div>
                 <div class = "row" style = "padding: 1%; padding-left: 0%">
                     <div class = "col" style = "padding-left: 0">
                         Теги:
-                        {% for tag in question.get_tags %}
+                        {% for tag in item.get_tags %}
                         <a href = "{% url 'search' tag %}" style = "padding-left: 1%;" >
                             {{ tag }}
                         </a>
                         {% endfor %}
                     </div>
                     <div class = "col text-end">
-                        <a href = "{% url 'question' question.id %}">
-                            Ответы: {{ question.answers_count }}
+                        <a href = "{% url 'question' item.id %}">
+                            Ответы: {{ item.answers_count }}
                         </a>
                     </div>
                 </div>

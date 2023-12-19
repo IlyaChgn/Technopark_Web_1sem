@@ -1,23 +1,12 @@
 from django.db import models
 from django.conf import settings
-
-
-class ProfileManager(models.Manager):
-    def find_profile(self, user_id):
-        return self.filter(user=user_id).first()
+from django.db.models import Sum
 
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    avatar = models.ImageField(null=True)
+    avatar = models.ImageField(null=True, blank=True, default='default.png', upload_to='avatar/%Y/%m/%d')
     login = models.CharField(max_length=30)
-
-    objects = ProfileManager()
-
-
-class Rating(models.Model):
-    mark = models.IntegerField()
-    profile = models.ManyToManyField(Profile)
 
 
 class Tag(models.Model):
@@ -29,7 +18,7 @@ class QuestionManager(models.Manager):
         return self.order_by('date').reverse()
 
     def hot_questions_list(self):
-        return self.order_by('rating__mark').reverse()
+        return self.annotate(total_rating=Sum('questionrating__mark')).order_by('-total_rating')
 
     def find_by_tag(self, tag_name):
         return self.prefetch_related('tags').filter(tags__tag=tag_name)
@@ -37,7 +26,8 @@ class QuestionManager(models.Manager):
 
 class Question(models.Model):
     def rating_count(self):
-        return self.rating.mark
+        r_sum = QuestionRating.objects.filter(post=self).aggregate(Sum('mark'))
+        return r_sum['mark__sum']
 
     def get_tags(self):
         tag_list = self.tags.all()
@@ -49,11 +39,24 @@ class Question(models.Model):
     def answers_count(self):
         return Answer.objects.list_answers_count(self.pk)
 
+    def get_negative_votes(self):
+        votes = QuestionRating.objects.search_by_mark(self.pk, -1)
+        users = []
+        for vote in votes:
+            users.append(vote.profile)
+        return users
+
+    def get_positive_votes(self):
+        votes = QuestionRating.objects.search_by_mark(self.pk, 1)
+        users = []
+        for vote in votes:
+            users.append(vote.profile)
+        return users
+
     title = models.CharField(max_length=256)
     text = models.TextField()
     tags = models.ManyToManyField(Tag)
     date = models.DateTimeField()
-    rating = models.OneToOneField(Rating, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     objects = QuestionManager()
@@ -64,18 +67,65 @@ class AnswerManager(models.Manager):
         return self.filter(question=question_id).count()
 
     def answers_list(self, question_id):
-        return self.filter(question=question_id).all()
+        return self.filter(question=question_id).annotate(total_rating=Sum('answerrating__mark')).order_by(
+            '-total_rating')
 
 
 class Answer(models.Model):
     def rating_count(self):
-        return self.rating.mark
+        r_sum = AnswerRating.objects.filter(post=self).aggregate(Sum('mark'))
+        return r_sum['mark__sum'] if r_sum['mark__sum'] is not None else 0
+
+    def get_negative_votes(self):
+        votes = AnswerRating.objects.search_by_mark(self.pk, -1)
+        users = []
+        for vote in votes:
+            users.append(vote.profile)
+        return users
+
+    def get_positive_votes(self):
+        votes = AnswerRating.objects.search_by_mark(self.pk, 1)
+        users = []
+        for vote in votes:
+            users.append(vote.profile)
+        return users
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.TextField()
     date = models.DateTimeField()
-    rating = models.OneToOneField(Rating, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     is_correct = models.BooleanField(null=True)
 
     objects = AnswerManager()
+
+
+class QuestionRatingManager(models.Manager):
+    def search(self, question_id, profile_id):
+        return self.filter(post=question_id, profile=profile_id).first()
+
+    def search_by_mark(self, question_id, mark):
+        return self.filter(post=question_id, mark=mark)
+
+
+class QuestionRating(models.Model):
+    mark = models.IntegerField()
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    objects = QuestionRatingManager()
+
+
+class AnswerRatingManager(models.Manager):
+    def search(self, answer_id, profile_id):
+        return self.filter(post=answer_id, profile=profile_id).first()
+
+    def search_by_mark(self, answer_id, mark):
+        return self.filter(post=answer_id, mark=mark)
+
+
+class AnswerRating(models.Model):
+    mark = models.IntegerField()
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Answer, on_delete=models.CASCADE)
+
+    objects = AnswerRatingManager()

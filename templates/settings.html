@@ -6,7 +6,7 @@
     <div class = "mb-3 bold_header" style = "padding-bottom: 1%;">
         Настройки: {{ user.username }}
     </div>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
         <div class="row mb-3">
@@ -26,5 +26,12 @@
             <button type="submit" class="btn btn-success" style = "width: 200px">Сохранить изменения</button>
         </div>
     </form>
+    {% if messages %}
+    <div class="row" style="color: darkgreen; font-size: 20px; padding-left: 10%">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

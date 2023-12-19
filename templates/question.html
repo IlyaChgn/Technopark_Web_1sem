@@ -7,7 +7,7 @@
     <div class="row question_header" style="font-size: 24px; padding-bottom: 2%">
         Ответы
     </div>
-    {% for answer in items %}
+    {% for item in items %}
 
     {% include 'components/answer_item.html' %}
 
@@ -37,7 +37,7 @@
         {% else %}
         <div class="row" style="padding-bottom: 2%">
             <div class="form-label" style="padding-bottom: 1%; margin: 0; padding-left: 0; padding-right: 0">
-                Войдите в аккаунт, чтобы добавить свой ответ на вопрос
+                Войдите в аккаунт, чтобы добавить свой ответ на вопрос.
             </div>
         </div>
         {% endif %}
@@ -46,7 +46,7 @@
 
     <div class="row" style="padding-bottom: 2%; padding-top: 2%">
         <span class="text-center">
-            <form action="{% url 'question' question.id %}">
+            <form action="{% url 'question' item.id %}">
                 {% include 'components/pagination.html' %}
             </form>
         </span>

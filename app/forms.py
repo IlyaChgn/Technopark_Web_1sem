@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 import re
 
-from app.models import Profile, Question, Rating, Tag, Answer
+from app.models import Profile, Question, Tag, Answer, QuestionRating, AnswerRating
 
 
 class LoginForm(forms.Form):
@@ -54,9 +54,8 @@ class RegisterForm(forms.ModelForm):
                                       'placeholder': 'Отображаемое имя'}),
         max_length=30,
         label='Никнейм', required=True)
-    avatar = forms.ImageField(
-        widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'InputAvatar'}), label='Загрузите аватар',
-        required=False)
+    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'InputAvatar'}),
+                              label='Загрузите аватар', required=False)
 
     class Meta:
         model = User
@@ -96,7 +95,9 @@ class RegisterForm(forms.ModelForm):
         nickname = self.cleaned_data['nickname']
         avatar = self.cleaned_data['avatar']
 
-        user_profile = Profile(login=nickname, avatar=avatar, user=user)
+        user_profile = Profile(login=nickname, user=user)
+        if avatar is not None:
+            user_profile.avatar = avatar
         user_profile.save()
         return user
 
@@ -145,12 +146,12 @@ class QuestionForm(forms.ModelForm):
         text = self.cleaned_data['text']
         tags = self.cleaned_data['tags']
         date = datetime.now()
-        profile = Profile.objects.find_profile(request.user.pk)
-        rating = Rating.objects.create(mark=0)
+        profile = request.user.profile
 
-        question = Question(title=title, text=text, date=date, rating=rating, profile=profile)
+        question = Question(title=title, text=text, date=date, profile=profile)
         question.save()
         question.tags.add(*tags)
+        QuestionRating.objects.create(post=question, mark=0)
         return question
 
 
@@ -167,12 +168,12 @@ class AnswerForm(forms.ModelForm):
     def save(self, request, question_id, **kwargs):
         text = self.cleaned_data['text']
         date = datetime.now()
-        profile = Profile.objects.find_profile(request.user.pk)
-        rating = Rating.objects.create(mark=0)
+        profile = request.user.profile
         question = Question.objects.filter(pk=question_id).first()
 
-        answer = Answer(text=text, date=date, profile=profile, rating=rating, question=question, is_correct=None)
+        answer = Answer(text=text, date=date, profile=profile, question=question, is_correct=None)
         answer.save()
+        AnswerRating.objects.create(post=answer, mark=0)
         return answer
 
 
@@ -215,11 +216,14 @@ class SettingsForm(forms.ModelForm):
     def save(self, request, **kwargs):
         username = self.cleaned_data['username']
         email = self.cleaned_data['email']
-        profile = Profile.objects.find_profile(request.user.pk)
+        user = request.user
+        user.username = username
+        user.email = email
+        profile = request.user.profile
         nickname = self.cleaned_data['nickname']
         avatar = self.cleaned_data['avatar']
-        print('is saving')
-        request.user.update(username=username, email=email)
-        request.user.save()
-        profile.update(login=nickname, avatar=avatar)
+        profile.login = nickname
+        if avatar is not None:
+            profile.avatar = avatar
         profile.save()
+        user.save()
