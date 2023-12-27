@@ -1,0 +1,40 @@
+{% load static %}
+{% load extras %}
+
+{% if request.user.profile in item.get_negative_votes %}
+<div class="col text-end" style="width: 36px">
+    <button class="btn btn-danger"
+            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">-
+    </button>
+</div>
+{% else %}
+<div class="col text-end" style="width: 36px">
+    <button class="btn btn-outline-danger"
+            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">-
+    </button>
+</div>
+{% endif %}
+{% if item.rating_count >= 0 %}
+<div class="col text-center"
+     style="font-size: 26px; color: green; padding-left: 0; padding-right: 0">
+    {{ item.rating_count }}
+</div>
+{% else %}
+<div class="col text-center"
+     style="font-size: 26px; color: red; padding-left: 0; padding-right: 0">
+    {{ item.rating_count }}
+</div>
+{% endif %}
+{% if request.user.profile in item.get_positive_votes %}
+<div class="col text-start align-self-center" style="width: 36px">
+    <button class="btn btn-success"
+            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">+
+    </button>
+</div>
+{% else %}
+<div class="col text-start align-self-center" style="width: 36px">
+    <button class="btn btn-outline-success"
+            style="border-width: 2px; width: 36px; font-weight: bold; font-size: 16px">+
+    </button>
+</div>
+{% endif %}
