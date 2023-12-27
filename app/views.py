@@ -1,8 +1,7 @@
-import json
-
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -10,9 +9,10 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.db import IntegrityError
+from django.utils.translation import gettext as _
 
 from .forms import LoginForm, RegisterForm, QuestionForm, SettingsForm, AnswerForm
-from .models import Question, Answer, QuestionRating, AnswerRating
+from .models import Question, Answer, QuestionRating, AnswerRating, Tag, top_users_by_rating
 
 
 def paginate(objects, page_num, per_page=10):
@@ -20,22 +20,60 @@ def paginate(objects, page_num, per_page=10):
     return paginator.get_page(page_num)
 
 
+def cache_popular_tags():
+    tags = Tag.objects.popular_tags_list(10)
+    cache.set('popular_tags', tags, 604800)
+
+
+def get_popular_tags():
+    tags = cache.get('popular_tags')
+    return {'popular_tags': tags}
+
+
+def cache_best_members():
+    members = top_users_by_rating()
+    cache.set('best_members', members, 604800)
+
+
+def get_best_members():
+    members = cache.get('best_members')
+    return {'best_members': members}
+
+
+def base_context():
+    return {**get_popular_tags(), **get_best_members()}
+
+
+@csrf_protect
+def find(request):
+    if request.method == 'POST':
+        text = request.POST.get('search')
+    if request.method == 'GET':
+        text = request.GET.get('search')
+    questions = Question.objects.search(text)
+    page_num = request.GET.get('page')
+    return render(request, 'index.html',
+                  {'items': paginate(questions, page_num), 'type': 'find', **base_context()})
+
+
 def index(request):
     questions = Question.objects.new_questions_list()
     page_num = request.GET.get('page')
-    return render(request, 'index.html', {'items': paginate(questions, page_num), 'type': 'new'})
+    return render(request, 'index.html',
+                  {'items': paginate(questions, page_num), 'type': 'new', **base_context()})
 
 
 def search(request, tag_name):
     questions = Question.objects.find_by_tag(tag_name)
     page_num = request.GET.get('page')
-    return render(request, 'index.html', {'items': paginate(questions, page_num), 'type': 'search', 'tag': tag_name})
+    return render(request, 'index.html',
+                  {'items': paginate(questions, page_num), 'type': 'search', 'tag': tag_name, **base_context()})
 
 
 def show_hot(request):
     questions = Question.objects.hot_questions_list()
     page_num = request.GET.get('page')
-    return render(request, 'index.html', {'items': paginate(questions, page_num), 'type': 'hot'})
+    return render(request, 'index.html', {'items': paginate(questions, page_num), 'type': 'hot', **base_context()})
 
 
 @csrf_protect
@@ -52,7 +90,8 @@ def question(request, question_id):
     page_num = request.GET.get('page')
     answers = Answer.objects.answers_list(question_id)
     return render(request, 'question.html', {'item': item,
-                                             'items': paginate(answers, page_num, 15), 'form': answer_form})
+                                             'items': paginate(answers, page_num, 15), 'form': answer_form,
+                                             **base_context()})
 
 
 @csrf_protect
@@ -66,8 +105,8 @@ def settings(request):
                                      initial={'nickname': request.user.profile.login})
         if settings_form.is_valid():
             settings_form.save(request)
-            messages.success(request, 'Новые данные профиля успешно сохранены!')
-    return render(request, 'settings.html', {'form': settings_form})
+            messages.success(request, _('Новые данные профиля успешно сохранены!'))
+    return render(request, 'settings.html', {'form': settings_form, **base_context()})
 
 
 @csrf_protect
@@ -80,7 +119,7 @@ def ask(request):
         if question_form.is_valid():
             new_question = question_form.save(request)
             return redirect(reverse('question', args=[new_question.pk]))
-    return render(request, 'ask.html', context={'form': question_form})
+    return render(request, 'ask.html', context={'form': question_form, **base_context()})
 
 
 @csrf_protect
@@ -105,8 +144,8 @@ def log_in(request):
                 else:
                     return redirect(reverse('index'))
             else:
-                login_form.add_error(None, "Неверное имя пользователя или пароль.")
-    return render(request, 'login.html', context={'form': login_form})
+                login_form.add_error(None, _('Неверное имя пользователя или пароль.'))
+    return render(request, 'login.html', context={'form': login_form, **base_context()})
 
 
 @csrf_protect
@@ -129,8 +168,8 @@ def signup(request):
                 else:
                     return redirect(reverse('index'))
             except IntegrityError:
-                signup_form.add_error(None, 'Пользователь с таким именем уже существует.')
-    return render(request, 'signup.html', context={'form': signup_form})
+                signup_form.add_error(None, _('Пользователь с таким именем уже существует.'))
+    return render(request, 'signup.html', context={'form': signup_form, **base_context()})
 
 
 @login_required(login_url='login', redirect_field_name='continue')

@@ -1,5 +1,6 @@
 {% load static %}
 {% load extras %}
+{% load i18n %}
 
 <div class="row" style="padding-bottom: 2%; padding-right: 2%">
     <div class="border rounded border-success">
@@ -21,29 +22,29 @@
                     {{ item.text }}
                 </div>
                 <div class="row" style="font-style: italic; padding-top: 2%">
-                    Ответ дан {{ item.date }}
+                    {% trans 'Ответ дан' %} {{ item.date }}
                 </div>
                 {% if item.is_correct %}
                 {% if request.user.profile == item.question.profile %}
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }} checked>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }}>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% else %}
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }} checked disabled>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }} disabled>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% endif %}
@@ -52,22 +53,22 @@
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }}>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }}>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% else %}
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }} disabled>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }} disabled>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% endif %}
@@ -76,22 +77,22 @@
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }}>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }} checked>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% else %}
                 <div class="row correct-answer-list" data-id="{{ item.pk }}" style="padding-left: 0%; padding-top: 3%; padding-bottom: 2%">
                     <div class="col-4" style="padding-left: 0">
                         <input type="checkbox" class="btn-check" id={{ item.pk|correct }} disabled>
-                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>Ответ был полезен</label>
+                        <label class="btn btn-outline-success" for={{ item.pk|correct }}>{% trans 'Ответ был полезен' %}</label>
                     </div>
                     <div class="col-3 text-start">
                         <input type="checkbox" class="btn-check" id={{ item.pk|incorrect }} checked disabled>
-                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>Ответ не помог</label>
+                        <label class="btn btn-outline-danger" for={{ item.pk|incorrect }}>{% trans 'Ответ не помог' %}</label>
                     </div>
                 </div>
                 {% endif %}

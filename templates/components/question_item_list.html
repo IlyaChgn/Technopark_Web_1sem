@@ -1,5 +1,6 @@
 {% load static %}
 {% load extras %}
+{% load i18n %}
 
 <div class = "row" style = "padding-top: 2%; padding-bottom: 2%">
     <div class = "border rounded border-success">
@@ -24,11 +25,11 @@
                     {{ item.text }}
                 </div>
                 <div class = "row" style = "font-style: italic; padding-top: 2%">
-                    Вопрос добавлен {{ item.date }}
+                    {% trans 'Вопрос добавлен' %} {{ item.date }}
                 </div>
                 <div class = "row" style = "padding: 1%; padding-left: 0%">
                     <div class = "col" style = "padding-left: 0">
-                        Теги:
+                        {% trans 'Теги:' %}
                         {% for tag in item.get_tags %}
                         <a href = "{% url 'search' tag %}" style = "padding-left: 1%;" >
                             {{ tag }}
@@ -37,7 +38,7 @@
                     </div>
                     <div class = "col text-end">
                         <a href = "{% url 'question' item.id %}">
-                            Ответы: {{ item.answers_count }}
+                            {% trans 'Ответы:' %} {{ item.answers_count }}
                         </a>
                     </div>
                 </div>

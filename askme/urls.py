@@ -17,6 +17,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('rate/', views.rate, name='rate'),
     path('correct/', views.correct, name='correct'),
+    path('find/', views.find, name='find'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

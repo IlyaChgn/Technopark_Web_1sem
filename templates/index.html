@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 
 <div class = "col">
     <div class = "row" style = "padding-left: 0">
         <div class = "col-6 text-start">
-            <a class = "bold_header" href = "{% url 'index' %}" style = "color: black">Новые вопросы</a>
+            <a class = "bold_header" href = "{% url 'index' %}" style = "color: black">{% trans 'Новые вопросы' %}</a>
         </div>
         <div class = "col-6 text-end">
-            <a class = "bold_header" href = "{% url 'hot' %}" style = "color: black">Лучшие вопросы</a>
+            <a class = "bold_header" href = "{% url 'hot' %}" style = "color: black">{% trans 'Лучшие вопросы' %}</a>
         </div>
     </div>
 
@@ -31,6 +32,10 @@
                 </form>
             {% elif type == 'search' %}
                 <form action = "{% url 'search' tag %}">
+                    {% include 'components/pagination.html' %}
+                </form>
+            {% elif type == 'find' %}
+                <form action = "{% url 'find' %}">
                     {% include 'components/pagination.html' %}
                 </form>
             {% endif %}

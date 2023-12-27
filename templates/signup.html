@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class = "col-3"></div>
 <div class = "col">
     <div class = "mb-3 bold_header" style = "padding-bottom: 1%;">
-        Регистрация на CodeResolve
+        {% trans 'Регистрация на CodeResolve' %}
     </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -26,7 +27,7 @@
             {{ form.non_field_errors }}
         </div>
         <div class = "row mb-3" style = "padding-top: 1%; padding-left: 28%">
-            <button type="submit" class="btn btn-primary" style = "width: 200px">Зарегистрироваться</button>
+            <button type="submit" class="btn btn-primary" style = "width: 200px">{% trans 'Зарегистрироваться' %}</button>
         </div>
     </form>
 </div>

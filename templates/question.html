@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 
 <div class="col">
     {% include 'components/question_item_page.html' %}
     <div class="row question_header" style="font-size: 24px; padding-bottom: 2%">
-        Ответы
+        {% trans 'Ответы' %}
     </div>
     {% for item in items %}
 
@@ -32,12 +33,12 @@
             {{ form.non_field_errors }}
         </div>
         <div class="d-grid gap-2 justify-content-md-end d-md-flex" style="padding-right: 4%">
-            <button class="btn btn-success" type="submit">Отправить ответ</button>
+            <button class="btn btn-success" type="submit">{% trans 'Отправить ответ' %}</button>
         </div>
         {% else %}
         <div class="row" style="padding-bottom: 2%">
             <div class="form-label" style="padding-bottom: 1%; margin: 0; padding-left: 0; padding-right: 0">
-                Войдите в аккаунт, чтобы добавить свой ответ на вопрос.
+                {% trans 'Войдите в аккаунт, чтобы добавить свой ответ на вопрос.' %}
             </div>
         </div>
         {% endif %}

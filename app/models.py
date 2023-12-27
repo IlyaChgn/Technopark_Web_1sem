@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.utils import timezone
+from django.contrib.postgres.search import SearchVector
 
 
 class Profile(models.Model):
@@ -8,9 +10,35 @@ class Profile(models.Model):
     avatar = models.ImageField(null=True, blank=True, default='default.png', upload_to='avatar/%Y/%m/%d')
     login = models.CharField(max_length=30)
 
+    def total_rating(self):
+        question_rating = self.question_set.aggregate(total=Sum('questionrating__mark'))['total'] or 0
+        answer_rating = self.answer_set.aggregate(total=Sum('answerrating__mark'))['total'] or 0
+        return question_rating + answer_rating
+
+
+def top_users_by_rating():
+    users = Profile.objects.annotate(total_rating=models.Sum(models.Case(
+        models.When(question__questionrating__profile=models.F('id'),
+                    then=models.F('question__questionrating__mark')),
+        models.When(answer__answerrating__profile=models.F('id'), then=models.F('answer__answerrating__mark')),
+        default=models.Value(0),
+        output_field=models.IntegerField(),
+    ))).order_by('-total_rating')[:10]
+    return users
+
+
+class TagManager(models.Manager):
+    def popular_tags_list(self, count):
+        time_delta = timezone.now() - timezone.timedelta(days=90)
+        return self.annotate(
+            question_count=Count('question', filter=models.Q(question__date__gte=time_delta))).order_by(
+            '-question_count')[:count]
+
 
 class Tag(models.Model):
     tag = models.CharField(max_length=20)
+
+    objects = TagManager()
 
 
 class QuestionManager(models.Manager):
@@ -21,7 +49,10 @@ class QuestionManager(models.Manager):
         return self.annotate(total_rating=Sum('questionrating__mark')).order_by('-total_rating')
 
     def find_by_tag(self, tag_name):
-        return self.prefetch_related('tags').filter(tags__tag=tag_name)
+        return self.prefetch_related('tags').filter(tags__tag=tag_name).order_by('date').reverse()
+
+    def search(self, text):
+        return self.annotate(search=SearchVector('text', 'title')).filter(search=text).order_by('date').reverse()
 
 
 class Question(models.Model):
